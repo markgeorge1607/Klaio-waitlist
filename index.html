@@ -340,10 +340,13 @@
       </p>
 
       <div class="hero-actions">
-        <form class="waitlist-form" onsubmit="return false" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center">
-          <input class="waitlist-input" type="text" placeholder="Your name" autocomplete="given-name" style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:180px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
-          <input class="waitlist-input" type="email" placeholder="Email" autocomplete="email" style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:230px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
-          <button type="submit" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;color:#1a3326;background:#fff;border:none;padding:14px 24px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .25s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Join waitlist</button>
+        <div data-fs-success style="display:none;font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:.04em">You're on the list — we'll be in touch. ✓</div>
+        <div data-fs-error style="display:none;font-family:'DM Mono',monospace;font-size:12px;color:#fbbf24;margin-bottom:8px"></div>
+        <form id="hero-form" class="waitlist-form" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center">
+          <input class="waitlist-input" type="text" name="name" placeholder="Your name" autocomplete="given-name" data-fs-field style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:180px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
+          <input class="waitlist-input" type="email" name="email" placeholder="Email" autocomplete="email" data-fs-field style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:230px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
+          <button type="submit" data-fs-submit-btn style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;color:#1a3326;background:#fff;border:none;padding:14px 24px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .25s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Join waitlist</button>
+          <span data-fs-error="email" style="font-family:'DM Mono',monospace;font-size:11px;color:#fbbf24;width:100%;text-align:center"></span>
         </form>
         <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:4px;font-family:'DM Mono',monospace;letter-spacing:.04em;text-align:center">No spam. No credit card. Just an early invite.</p>
       </div>
@@ -508,7 +511,7 @@
       <div class="section-eyebrow">How it works</div>
       <div class="section-title">Connected within 15 minutes.<br/><em>Books accurate from day one.</em></div>
       <p style="font-size:14px;color:var(--muted);max-width:500px;margin-top:16px;line-height:1.7;font-weight:400;">
-        OAuth connections only. No engineers. No field mapping. Klaio infers your VAT settings from Shopify and Xero automatically — no configuration required.
+        Klaio uses secure, one-click authorisation to connect your platforms without ever seeing your passwords. Forget about hiring engineers or tedious field mapping—Klaio automatically syncs your VAT settings between Shopify and Xero so you can get started instantly.
       </p>
     </div>
 
@@ -516,7 +519,7 @@
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px">
         <div style="margin-bottom:14px"><i class="iconoir-link" style="font-size:28px;color:var(--dark)"></i></div>
         <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:8px;letter-spacing:-0.05em">Connect</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.65;font-weight:400">Authorise Shopify + Xero via OAuth. Klaio reads your payout history and VAT settings immediately.</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.65;font-weight:400">Authorise Shopify + Xero via secure, one-click authorisation. Klaio reads your payout history and VAT settings immediately.</div>
         <div style="margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:.06em">~15 minutes</div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px">
@@ -580,7 +583,7 @@
     <div class="reveal">
       <div class="section-eyebrow" style="text-align:center">Integrations</div>
       <div class="section-title" style="text-align:center;margin:0 auto;max-width:560px">Built for Shopify merchants.<br/><em>Works where you already work.</em></div>
-      <p class="int-sub" style="margin-top:14px">Connect via OAuth in minutes. No field mapping, no engineers, no new software to learn.</p>
+      <p class="int-sub" style="margin-top:14px">Connect via secure, one-click authorisation in minutes. No field mapping, no engineers, no new software to learn.</p>
     </div>
     <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
       <div class="int-pill">Shopify Payments</div>
@@ -601,10 +604,13 @@
       <h2 class="cta-title">Your Shopify payout,<br/><em>explained in plain English.</em></h2>
       <p class="cta-sub">Connect Shopify, Xero or QuickBooks within 15 minutes. Klaio explains every payout in plain English.</p>
       <div class="cta-actions" style="flex-direction:column;gap:14px">
-        <form class="waitlist-form" onsubmit="return false" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center">
-          <input class="waitlist-input" type="text" placeholder="Your name" autocomplete="given-name" style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:180px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
-          <input class="waitlist-input" type="email" placeholder="Email" autocomplete="email" style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:230px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
-          <button type="submit" style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;color:#1a3326;background:#fff;border:none;padding:14px 24px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .25s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Join waitlist</button>
+        <div data-fs-success style="display:none;font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,0.8);letter-spacing:.04em">You're on the list — we'll be in touch. ✓</div>
+        <div data-fs-error style="display:none;font-family:'DM Mono',monospace;font-size:12px;color:#fbbf24;margin-bottom:8px"></div>
+        <form id="cta-form" class="waitlist-form" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center">
+          <input class="waitlist-input" type="text" name="name" placeholder="Your name" autocomplete="given-name" data-fs-field style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:180px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
+          <input class="waitlist-input" type="email" name="email" placeholder="Email" autocomplete="email" data-fs-field style="font-family:'Space Grotesk',sans-serif;font-size:14px;color:#fff;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:14px 18px;border-radius:10px;outline:none;width:230px;transition:border-color .2s" onfocus="this.style.borderColor='rgba(255,255,255,0.45)'" onblur="this.style.borderColor='rgba(255,255,255,0.18)'" />
+          <button type="submit" data-fs-submit-btn style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500;color:#1a3326;background:#fff;border:none;padding:14px 24px;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .25s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 16px 40px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Join waitlist</button>
+          <span data-fs-error="email" style="font-family:'DM Mono',monospace;font-size:11px;color:#fbbf24;width:100%;text-align:center"></span>
         </form>
         <p style="font-size:12px;color:rgba(255,255,255,0.3);font-family:'DM Mono',monospace;letter-spacing:.04em">No spam. No credit card. Just an early invite.</p>
       </div>
@@ -631,6 +637,12 @@
     <div class="footer-copy">© 2026 Klaio.io</div>
   </footer>
 
+  <script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#hero-form', formId: 'mbdwkodp' });
+    formspree('initForm', { formElement: '#cta-form',  formId: 'mbdwkodp' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
   <script>
     // Nav scroll
     const nav = document.getElementById('mainNav');
