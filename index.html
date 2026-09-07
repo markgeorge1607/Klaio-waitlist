@@ -141,7 +141,6 @@
   .tag-warn{font-family:var(--font-mono);font-size:8px;font-weight:500;letter-spacing:.08em;padding:2px 7px;border-radius:4px;color:var(--amber);background:var(--amber-bg)}
   .int-pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:9px 16px;font-size:12px;color:var(--muted);white-space:nowrap;transition:all .2s;cursor:default}
   .int-pill:hover{border-color:var(--green);color:var(--green)}
-  .pp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
   .platform-pill-onlight{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:7px 14px;font-size:11.5px;color:var(--muted)}
 
   /* ── CARDS ── */
@@ -191,8 +190,6 @@
   nav.scrolled .nav-links a{color:var(--muted)}
   nav.scrolled .nav-links a:hover{color:var(--dark);background:var(--surface2)}
   .nav-cta{display:flex;align-items:center;gap:16px}
-  .nav-flag{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
-  nav.scrolled .nav-flag{color:var(--faint)}
   nav.scrolled .btn-nav{color:var(--green)}
 
   /* ══════════════════════════════════════════
@@ -305,9 +302,11 @@
   .timeline-row-name{font-size:12.5px;font-weight:700;color:var(--dark);letter-spacing:-0.02em}
   .timeline-row-value{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
   .timeline-track{height:10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);overflow:hidden;position:relative}
-  .timeline-fill{height:100%;border-radius:6px}
-  .timeline-fill.short{width:14%;background:var(--faint)}
-  .timeline-fill.long{width:96%;background:var(--green)}
+  .timeline-fill{height:100%;border-radius:6px;width:0;transition:width 1.3s cubic-bezier(.16,.84,.44,1)}
+  .timeline-fill.short{background:var(--faint)}
+  .timeline-fill.short.filled{width:14%}
+  .timeline-fill.long{background:var(--green);transition-delay:.15s}
+  .timeline-fill.long.filled{width:96%}
   .timeline-caption{font-size:11px;color:var(--faint);margin-top:8px}
 
   /* ── AI FLAG CARD ── */
@@ -326,8 +325,6 @@
   .flag-explain-text{font-size:13px;color:var(--text);line-height:1.75}
   .flag-explain-text strong{font-weight:700;color:var(--dark)}
   .flag-highlight{display:inline;background:var(--amber-bg);color:var(--amber);padding:1px 5px;border-radius:4px;font-weight:500;font-size:12px}
-  .flag-action-row{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
-  .flag-action-note{font-size:11px;color:var(--faint);font-family:var(--font-mono)}
 
   /* ── PORTFOLIO MOCKUP (bookkeeper section) ── */
   .portfolio-frame{background:var(--surface);border:1px solid var(--border2);border-radius:18px;overflow:hidden;box-shadow:0 32px 96px rgba(20,20,20,.08)}
@@ -335,12 +332,15 @@
   .portfolio-dot{width:9px;height:9px;border-radius:50%}
   .portfolio-title-bar{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
   .portfolio-body{padding:8px}
-  .portfolio-client-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:14px;padding:14px 14px;border-radius:10px}
+  .portfolio-client-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;padding:14px 14px;border-radius:10px}
   .portfolio-client-row:hover{background:var(--surface2)}
+  .portfolio-client-row.flagged{animation:flagPulse 2.6s ease-in-out infinite}
+  .portfolio-client-row.flagged .tag-warn{animation:flagBadgePulse 2.6s ease-in-out infinite}
+  @keyframes flagPulse{0%,100%{background:transparent;box-shadow:0 0 0 0 rgba(160,96,48,0)}50%{background:var(--amber-bg);box-shadow:0 0 0 1px rgba(160,96,48,.18) inset}}
+  @keyframes flagBadgePulse{0%,100%{opacity:1}50%{opacity:.6}}
   .portfolio-avatar{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;font-weight:700;color:#fff}
   .portfolio-client-name{font-size:12.5px;font-weight:700;color:var(--dark)}
   .portfolio-client-meta{font-size:10.5px;color:var(--faint);font-family:var(--font-mono);margin-top:2px}
-  .portfolio-client-platforms{display:flex;gap:5px}
 
   /* ── COMPARISON TABLE ── */
   .vs-header-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2px;background:var(--border);border-radius:16px 16px 0 0;overflow:hidden}
@@ -378,6 +378,9 @@
   .waitlist-form{display:flex;gap:10px;justify-content:center;max-width:480px;margin:0 auto;flex-wrap:wrap}
   .waitlist-input{flex:1;min-width:200px;font-family:var(--font-body);font-size:14px;color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:14px 18px}
   .waitlist-input::placeholder{color:rgba(255,255,255,.4)}
+  .select-wrap{flex:1;min-width:200px;position:relative}
+  .select-wrap .waitlist-input{flex:none;min-width:0;width:100%;appearance:none;-webkit-appearance:none;padding-right:44px}
+  .select-wrap i{position:absolute;top:50%;right:16px;transform:translateY(-50%);font-size:18px;color:rgba(255,255,255,.4);pointer-events:none}
   .cta-note{font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.35);margin-top:16px;letter-spacing:.05em}
 
   /* ── FOOTER ── */
@@ -408,7 +411,7 @@
 
 <!-- ══════════ NAV ══════════ -->
 <nav id="mainNav">
-  <a href="#top" class="nav-logo"><span class="logo-wm logo-md">Klaio<span class="io">.io</span></span></a>
+  <a href="#top" class="nav-logo"><span class="logo-wm logo-lg logo-white">Klaio<span class="io">.io</span></span></a>
   <ul class="nav-links">
     <li><a href="#why">Why Klaio</a></li>
     <li><a href="#uk-vat">UK VAT</a></li>
@@ -419,7 +422,6 @@
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-cta">
-    <span class="nav-flag">🇬🇧 GBP · HMRC-aware</span>
     <a href="#cta" class="btn-nav">Get early access</a>
   </div>
 </nav>
@@ -428,8 +430,8 @@
 <div class="hero-block surface-green" id="top">
   <canvas id="heroGradientCanvas" class="hero-gradient-canvas" aria-hidden="true"></canvas>
   <div class="hero">
-    <h1 class="t-hero">The reconciliation tool<span class="thin">built for UK VAT.</span></h1>
-    <p class="t-hero-sub">Billing in GBP. Categorisation that understands flat-rate and partial-exemption schemes. A full historical catch-up, done properly, not squeezed into a 60-day window. And an AI that checks whether your tax codes are <em style="font-style:normal;color:rgba(255,255,255,.85)">correct</em>, not just whether the numbers match.</p>
+    <h1 class="t-hero">The reconciliation tool<span class="thin">that checks its work.</span></h1>
+    <p class="t-hero-sub">Klaio reads your full Shopify payout breakdown, then checks whether the tax code behind each line is <em style="font-style:normal;color:rgba(255,255,255,.85)">correct</em>, not just whether the total matches. If you're behind, it reaches back through your full payout history to catch you up. It's priced in GBP and understands flat-rate and partial-exemption VAT schemes from day one.</p>
     <div class="hero-actions">
       <a href="#cta" class="btn-primary"><i class="iconoir-arrow-right"></i> Get early access</a>
       <a href="#comparison" class="btn-ghost">See how it compares</a>
@@ -460,27 +462,27 @@
       <div class="db-main">
         <div>
           <div class="db-heading">5 payouts · April 2026</div>
-          <div class="db-subtext">3 need attention · £1,783 unreconciled · AI summaries ready</div>
+          <div class="db-subtext">3 need attention · £1,094 unreconciled · AI summaries ready</div>
         </div>
         <div class="db-top-row">
-          <div class="db-stat"><div class="db-stat-label">Shopify gross</div><div class="db-stat-value">£14,573<span class="dec">.00</span></div><div class="db-stat-delta nt">5 payouts</div></div>
-          <div class="db-stat"><div class="db-stat-label">Net received</div><div class="db-stat-value">£13,836<span class="dec">.60</span></div><div class="db-stat-delta nt">After all fees</div></div>
-          <div class="db-stat"><div class="db-stat-label">Reconciled</div><div class="db-stat-value">£12,790<span class="dec">.70</span></div><div class="db-stat-delta up">↑ 2 of 5 clear</div></div>
-          <div class="db-stat"><div class="db-stat-label">Needs action</div><div class="db-stat-value">£1,094<span class="dec">.00</span></div><div class="db-stat-delta dn">↓ 3 issues</div></div>
+          <div class="db-stat"><div class="db-stat-label">Shopify gross</div><div class="db-stat-value">£<span class="count-up" data-count-to="18426">0</span><span class="dec">.00</span></div><div class="db-stat-delta nt">5 payouts</div></div>
+          <div class="db-stat"><div class="db-stat-label">Net received</div><div class="db-stat-value">£<span class="count-up" data-count-to="17840">0</span><span class="dec">.00</span></div><div class="db-stat-delta nt">After all fees</div></div>
+          <div class="db-stat"><div class="db-stat-label">Reconciled</div><div class="db-stat-value">£<span class="count-up" data-count-to="16746">0</span><span class="dec">.00</span></div><div class="db-stat-delta up">↑ 4 of 5 clear</div></div>
+          <div class="db-stat"><div class="db-stat-label">Needs action</div><div class="db-stat-value">£<span class="count-up" data-count-to="1094">0</span><span class="dec">.00</span></div><div class="db-stat-delta dn">↓ 3 issues</div></div>
         </div>
         <div class="db-bottom-row">
           <div class="db-card">
             <div class="db-card-title">Recent Payouts</div>
             <div class="db-payout-row"><span class="db-payout-id">PAY-APR-29</span><span class="db-payout-val">£4,641.50</span><span class="db-badge a">Fees unposted</span></div>
             <div class="db-payout-row"><span class="db-payout-id">PAY-APR-25</span><span class="db-payout-val">£3,149.20</span><span class="db-badge g">Reconciled</span></div>
-            <div class="db-payout-row"><span class="db-payout-id">PAY-APR-22</span><span class="db-payout-val">£5,407.80</span><span class="db-badge a">Fees unposted</span></div>
+            <div class="db-payout-row"><span class="db-payout-id">PAY-APR-22</span><span class="db-payout-val">£5,411.20</span><span class="db-badge a">Fees unposted</span></div>
             <div class="db-payout-row"><span class="db-payout-id">PAY-APR-18</span><span class="db-payout-val">£896.80</span><span class="db-badge r">Not in Xero</span></div>
           </div>
           <div class="db-card">
             <div class="db-card-title">Attention needed</div>
-            <div class="db-alert-row warn"><div class="db-alert-icon"><i class="iconoir-warning-triangle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>£108.20 fees</strong> not posted · P&amp;L overstated</div></div>
-            <div class="db-alert-row err"><div class="db-alert-icon"><i class="iconoir-xmark-circle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>PayPal payout</strong> £896.80 missing from Xero</div></div>
-            <div class="db-alert-row ok"><div class="db-alert-icon"><i class="iconoir-check-circle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>£7,790</strong> fully reconciled this month</div></div>
+            <div class="db-alert-row warn"><div class="db-alert-icon"><i class="iconoir-warning-triangle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>£104.80 fees</strong> not posted · P&amp;L overstated</div></div>
+            <div class="db-alert-row err"><div class="db-alert-icon"><i class="iconoir-xmark-circle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>PAY-APR-18</strong> £896.80 missing from Xero</div></div>
+            <div class="db-alert-row ok"><div class="db-alert-icon"><i class="iconoir-check-circle" style="font-size:12px"></i></div><div class="db-alert-text"><strong>£16,746</strong> fully reconciled this month</div></div>
           </div>
         </div>
       </div>
@@ -614,10 +616,6 @@
         <div class="flag-explain">
           <div class="flag-explain-label"><i class="iconoir-spark"></i> Klaio AI</div>
           <p class="flag-explain-text">This refund carried a <span class="flag-highlight">zero-rated tax code</span>, but the product category on the original order matches items you've coded as <strong>standard-rated</strong> elsewhere. The existing code may simply be wrong, not just unmatched. <strong>Your accountant may want to check this before filing.</strong></p>
-          <div class="flag-action-row">
-            <a href="#cta" class="btn-sm-solid" style="width:auto">Flag for accountant review</a>
-            <span class="flag-action-note">Klaio never changes VAT treatment automatically</span>
-          </div>
         </div>
       </div>
     </div>
@@ -638,11 +636,11 @@
     <div class="split">
       <div class="reveal">
         <div class="section-eyebrow-row"><span class="t-eyebrow">04 · Built to scale across clients & gateways</span></div>
-        <h2 class="t-h1">One view across every client.<span class="thin">Every gateway, beyond Xero and Shopify Payments.</span></h2>
+        <h2 class="t-h1">One view across every client.<span class="thin">More gateways on the way, beyond Xero and Shopify Payments.</span></h2>
         <p class="t-body" style="margin-top:16px">Single-integration tools work fine until a client also pays through Stripe, and the two gateways start building up separate clearing balances that never quite zero out. Or a channel gets connected twice (once as a direct integration, once as a Shopify payment gateway), and revenue gets counted twice until someone catches it. Or their books live in QuickBooks instead of Xero. Or you manage twelve clients instead of one, each on a different combination of tools. Klaio was built for the portfolio view from the start.</p>
         <ul class="split-list">
           <li><span class="pcheck"><i class="iconoir-check"></i></span><span><strong>Xero and QuickBooks:</strong> not locked to a single ledger.</span></li>
-          <li><span class="pcheck"><i class="iconoir-check"></i></span><span><strong>Shopify Payments, Stripe, PayPal, Klarna:</strong> reconciled in one place, not stitched together from clearing accounts that never quite match.</span></li>
+          <li><span class="pcheck"><i class="iconoir-check"></i></span><span><strong>Shopify Payments is live today.</strong> Stripe, PayPal and Klarna are next, so you won't have to stitch clearing accounts together that never quite match.</span></li>
           <li><span class="pcheck"><i class="iconoir-check"></i></span><span><strong>Multi-client portfolio view:</strong> built for bookkeepers managing several sellers, not just a single shop owner.</span></li>
         </ul>
       </div>
@@ -661,21 +659,13 @@
                 <div class="portfolio-client-name">North &amp; Bell Studio</div>
                 <div class="portfolio-client-meta">Xero · reconciled 2 min ago</div>
               </div>
-              <div class="portfolio-client-platforms">
-                <span class="pp-dot" style="background:var(--shopify);width:8px;height:8px;border-radius:50%;display:inline-block"></span>
-                <span class="pp-dot" style="background:var(--paypal);width:8px;height:8px;border-radius:50%;display:inline-block"></span>
-              </div>
               <span class="tag-ok">CLEAN</span>
             </div>
-            <div class="portfolio-client-row">
+            <div class="portfolio-client-row flagged">
               <div class="portfolio-avatar" style="background:var(--xero)">RF</div>
               <div>
                 <div class="portfolio-client-name">Roan &amp; Fable</div>
                 <div class="portfolio-client-meta">QuickBooks · 3 flags open</div>
-              </div>
-              <div class="portfolio-client-platforms">
-                <span class="pp-dot" style="background:#635bff;width:8px;height:8px;border-radius:50%;display:inline-block"></span>
-                <span class="pp-dot" style="background:var(--klarna);width:8px;height:8px;border-radius:50%;display:inline-block"></span>
               </div>
               <span class="tag-warn">3 FLAGS</span>
             </div>
@@ -684,9 +674,6 @@
               <div>
                 <div class="portfolio-client-name">Harlow &amp; Wren</div>
                 <div class="portfolio-client-meta">Xero · catch-up in progress</div>
-              </div>
-              <div class="portfolio-client-platforms">
-                <span class="pp-dot" style="background:var(--shopify);width:8px;height:8px;border-radius:50%;display:inline-block"></span>
               </div>
               <span class="tag-warn" style="color:var(--muted);background:var(--surface2)">CATCHING UP</span>
             </div>
@@ -702,7 +689,7 @@
   <div class="section-head center reveal" style="margin-left:auto;margin-right:auto">
     <div class="section-eyebrow-row center"><span class="t-eyebrow">Head to head</span></div>
     <h2 class="t-h1">Klaio.io vs. a typical<span class="thin">Xero + Shopify Payments matching tool.</span></h2>
-    <p class="t-body" style="margin-top:14px">A direct look at where "tax-matched, USD-only, 60-day" tools stop, and where Klaio starts.</p>
+    <p class="t-body" style="margin-top:14px">A look at what gets checked, not just matched.</p>
   </div>
 
   <div class="reveal">
@@ -713,39 +700,24 @@
     </div>
     <div class="vs-table">
       <div class="vs-table-row">
-        <div class="vs-table-cell label">Billing currency</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> USD only</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> GBP-native</div>
+        <div class="vs-table-cell label">Payout explanation</div>
+        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Built for your accountant to interpret</div>
+        <div class="vs-table-cell klaio-cell"><i class="iconoir-spark" style="color:var(--green)"></i> Written in plain English, for you</div>
       </div>
       <div class="vs-table-row">
-        <div class="vs-table-cell label">UK VAT scheme awareness</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> None</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Flat-rate &amp; partial exemption aware</div>
+        <div class="vs-table-cell label">Tax-code checking</div>
+        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Assigns a rate, doesn't catch errors</div>
+        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Flags known errors, like VAT on exempt fees</div>
       </div>
       <div class="vs-table-row">
-        <div class="vs-table-cell label">Historical reach</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> 60-day nightly drip</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Deep history + write-back</div>
+        <div class="vs-table-cell label">Refund &amp; chargeback VAT timing</div>
+        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> No VAT period tracking</div>
+        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Flags refunds and chargebacks that cross a VAT period</div>
       </div>
       <div class="vs-table-row">
-        <div class="vs-table-cell label">Tax-code handling</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Matches existing codes only</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-spark" style="color:var(--green)"></i> Validates &amp; flags likely errors</div>
-      </div>
-      <div class="vs-table-row">
-        <div class="vs-table-cell label">Accounting platforms</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Xero only</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Xero + QuickBooks</div>
-      </div>
-      <div class="vs-table-row">
-        <div class="vs-table-cell label">Payment gateways</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Shopify Payments only</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Shopify Payments, Stripe, PayPal, Klarna</div>
-      </div>
-      <div class="vs-table-row">
-        <div class="vs-table-cell label">Multi-client / bookkeeper view</div>
-        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Single-shop only</div>
-        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Full portfolio view</div>
+        <div class="vs-table-cell label">Historical catch-up</div>
+        <div class="vs-table-cell"><i class="iconoir-xmark" style="color:var(--faint)"></i> Extra months cost a paid add-on</div>
+        <div class="vs-table-cell klaio-cell"><i class="iconoir-check-circle" style="color:var(--green)"></i> Included in the plan, not a bolt-on</div>
       </div>
     </div>
   </div>
@@ -758,11 +730,13 @@
   <div class="section-head center reveal" style="margin-left:auto;margin-right:auto">
     <div class="section-eyebrow-row center"><span class="t-eyebrow">Pricing</span></div>
     <h2 class="t-h1">Priced in GBP.<span class="thin">Because your customers pay you in GBP too.</span></h2>
+    <p class="t-body" style="margin-top:14px">Join now and get 6 months free when Klaio goes live.</p>
   </div>
 
   <div class="pricing-grid reveal">
     <div class="pricing-card">
       <div class="pricing-tier">Starter</div>
+      <div class="pill pill-green" style="display:inline-flex;align-items:center;gap:5px;margin-bottom:10px"><i class="iconoir-gift" style="font-size:11px"></i>6 months free</div>
       <div class="pricing-price">£39<span>/mo</span></div>
       <div class="pricing-period">1 store · 1 ledger</div>
       <div class="pricing-divider"></div>
@@ -776,6 +750,7 @@
     <div class="pricing-card featured">
       <span class="badge-featured" style="position:absolute;top:-12px;left:50%;transform:translateX(-50%)">Most popular</span>
       <div class="pricing-tier">Catch-up + Growth</div>
+      <div class="pill pill-green" style="display:inline-flex;align-items:center;gap:5px;margin-bottom:10px"><i class="iconoir-gift" style="font-size:11px"></i>6 months free</div>
       <div class="pricing-price">£89<span>/mo</span></div>
       <div class="pricing-period">1 store · full historical catch-up</div>
       <div class="pricing-divider"></div>
@@ -783,12 +758,13 @@
         <li><span class="pcheck"><i class="iconoir-check"></i></span>Everything in Starter</li>
         <li><span class="pcheck" style="background:var(--green);color:#fff;border:none"><i class="iconoir-spark"></i></span>Tax-code validation &amp; flags</li>
         <li><span class="pcheck"><i class="iconoir-check"></i></span>Deep historical reach + write-back</li>
-        <li><span class="pcheck"><i class="iconoir-check"></i></span>All gateways: Stripe, PayPal, Klarna</li>
+        <li><span class="pcheck" style="background:var(--amber-bg);color:var(--amber);border:1px solid rgba(160,96,48,.2)"><i class="iconoir-clock"></i></span><span>Stripe, PayPal &amp; Klarna <span class="tag-warn">COMING SOON</span></span></li>
       </ul>
       <a href="#cta" class="btn-solid" style="width:100%;justify-content:center">Get early access</a>
     </div>
     <div class="pricing-card">
       <div class="pricing-tier">Bookkeeper</div>
+      <div class="pill pill-green" style="display:inline-flex;align-items:center;gap:5px;margin-bottom:10px"><i class="iconoir-gift" style="font-size:11px"></i>6 months free</div>
       <div class="pricing-price">From £199<span>/mo</span></div>
       <div class="pricing-period">Multi-client portfolio</div>
       <div class="pricing-divider"></div>
@@ -807,10 +783,25 @@
   <div class="cta-inner surface-green">
     <div class="grid-texture" style="position:absolute;inset:0"></div>
     <h2 class="cta-title">Behind on VAT-correct reconciliation?<span class="thin">Get early access to Klaio.io.</span></h2>
-    <p class="cta-sub">Built for UK Shopify sellers and the bookkeepers who manage them. GBP billing from day one.</p>
+    <p class="cta-sub">Built for UK Shopify sellers and the bookkeepers who manage them. Tell us where else you sell, and it'll shape what we build next.</p>
     <form class="waitlist-form" id="waitlist-form">
-      <input class="waitlist-input" type="email" placeholder="you@yourstore.co.uk" required/>
-      <button type="submit" class="btn-primary">Request access</button>
+      <input class="waitlist-input" type="text" name="name" placeholder="Your name" autocomplete="name"/>
+      <input class="waitlist-input" type="email" name="email" placeholder="you@yourstore.co.uk" autocomplete="email" required/>
+      <div class="select-wrap">
+      <select class="waitlist-input" name="country" aria-label="Where else do you sell?">
+        <option value="">Where else do you sell? (optional)</option>
+        <option value="US">🇺🇸 United States</option>
+        <option value="CA">🇨🇦 Canada</option>
+        <option value="AU">🇦🇺 Australia</option>
+        <option value="DE">🇩🇪 Germany</option>
+        <option value="FR">🇫🇷 France</option>
+        <option value="IE">🇮🇪 Ireland</option>
+        <option value="NZ">🇳🇿 New Zealand</option>
+        <option value="OTHER">Somewhere else</option>
+      </select>
+      <i class="iconoir-nav-arrow-down"></i>
+      </div>
+      <button type="submit" class="btn-primary">Get early access</button>
     </form>
     <div class="cta-note">NO CARD REQUIRED · UK-BASED SUPPORT · GBP BILLING</div>
   </div>
@@ -850,7 +841,9 @@
     waitlistForm.addEventListener('submit', async function(e){
       e.preventDefault();
       const button = this.querySelector('button');
-      const input = this.querySelector('input');
+      const nameInput = this.querySelector('input[name="name"]');
+      const emailInput = this.querySelector('input[name="email"]');
+      const countrySelect = this.querySelector('select[name="country"]');
       const originalLabel = button.textContent;
       button.disabled = true;
       button.textContent = 'Sending…';
@@ -858,11 +851,18 @@
         const res = await fetch(WAITLIST_API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: input.value, source: 'index' }),
+          body: JSON.stringify({
+            email: emailInput.value,
+            name: nameInput.value.trim() || undefined,
+            countryInterest: countrySelect.value || undefined,
+            source: 'index',
+          }),
         });
         if (!res.ok) throw new Error('request failed');
         button.textContent = 'Request received';
-        input.value = '';
+        nameInput.value = '';
+        emailInput.value = '';
+        countrySelect.value = '';
       } catch (err) {
         button.textContent = originalLabel;
         button.disabled = false;
@@ -877,6 +877,49 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
   }, { threshold:0.12 });
   revealEls.forEach(el=>io.observe(el));
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Dashboard preview — stat figures count up to their value once the card is clearly on screen
+  const countEls = document.querySelectorAll('.count-up');
+  function animateCountUp(el, duration = 1400) {
+    const target = parseFloat(el.dataset.countTo);
+    if (prefersReducedMotion) { el.textContent = target.toLocaleString('en-GB'); return; }
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(target * eased).toLocaleString('en-GB');
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const dashboardFrame = document.querySelector('.dashboard-frame');
+  if (dashboardFrame && countEls.length) {
+    const countObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting) {
+          countEls.forEach(el => animateCountUp(el));
+          countObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    countObserver.observe(dashboardFrame);
+  }
+
+  // Catch-up timeline — "typical nightly-drip tool" vs "Klaio.io" bars fill in once in view
+  const timelineCard = document.querySelector('.timeline-card');
+  if (timelineCard) {
+    const timelineObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('.timeline-fill').forEach(el => el.classList.add('filled'));
+          timelineObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    timelineObserver.observe(timelineCard);
+  }
 
   // ════════════════════════════════════════════════════════════
   // HERO BACKGROUND — Velaris (WebGL gradient)
