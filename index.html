@@ -94,11 +94,6 @@
   html{scroll-behavior:smooth}
   body{font-family:var(--font-body);background:var(--bg);color:var(--text);font-weight:400;line-height:1.6;overflow-x:hidden}
 
-  /* ── Visually-hidden utility — keeps text available to assistive tech
-     without showing it to sighted users (e.g. the real copy behind a
-     decorative/animated visual layer). Standard WCAG-safe pattern. */
-  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
   /* ── LOGO ── */
   .logo-wm{font-family:var(--font-body);font-weight:700;letter-spacing:-0.05em;display:inline-flex;align-items:baseline}
   .logo-wm .io{font-weight:400;opacity:.6;vertical-align:super;margin-left:2px;letter-spacing:0}
@@ -119,23 +114,6 @@
   .t-eyebrow.on-dark{color:rgba(255,255,255,.55)}
   .t-mono{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
   .t-hero-sub{font-size:16.5px;font-weight:400;color:rgba(255,255,255,.6);line-height:1.7;letter-spacing:-0.01em;text-wrap:balance}
-
-  /* ── HERO TITLE — decrypt reveal ──
-     Ported from the "DecryptText" React/shadcn component (motiq.dev,
-     MIT licensed) to plain vanilla JS/CSS — no React/shadcn/Tailwind build
-     step in this file, see CLAUDE.md. Characters scramble through a symbol
-     pool, then lock into place with a brief accent flash. Thin-line
-     characters get the same dimmer scramble/locked colours as
-     .t-hero .thin already uses. */
-  .decrypt-char{color:#fff}
-  .decrypt-char[data-state="scramble"]{color:rgba(255,255,255,.45)}
-  .decrypt-char[data-state="lock"]{color:#fff;animation:decryptFlash 420ms cubic-bezier(.2,0,0,1)}
-  .hero .t-hero .thin .decrypt-char{color:rgba(255,255,255,.5)}
-  .hero .t-hero .thin .decrypt-char[data-state="scramble"]{color:rgba(255,255,255,.3)}
-  .hero .t-hero .thin .decrypt-char[data-state="lock"]{color:rgba(255,255,255,.5)}
-  @media(prefers-reduced-motion:reduce){
-    .decrypt-char[data-state="lock"]{animation:none}
-  }
 
   /* ── BUTTONS (7 defined variants) ── */
   .btn-primary{font-family:var(--font-body);font-size:15px;font-weight:700;color:var(--green);background:#fff;border:none;padding:15px 30px;border-radius:10px;cursor:pointer;transition:all .2s;letter-spacing:-0.03em;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
@@ -196,7 +174,6 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
   @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes decryptFlash{0%{color:var(--green-light);text-shadow:0 0 24px rgba(168,213,181,.7)}100%{text-shadow:0 0 0 transparent}}
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
   .reveal.visible{opacity:1;transform:translateY(0)}
 
@@ -1045,165 +1022,6 @@
       raf = requestAnimationFrame(render);
     }
     raf = requestAnimationFrame(render);
-  })();
-
-  // ════════════════════════════════════════════════════════════
-  // HERO TITLE — Decrypt reveal
-  // Ported from the "DecryptText" React/shadcn component (motiq.dev,
-  // https://motiq.dev/components/decrypt-text, MIT) to plain vanilla JS —
-  // this file has no React/shadcn/Tailwind build step (see CLAUDE.md).
-  // Progressive enhancement: the <h1> already contains the real, readable
-  // copy (good for no-JS and SEO); this script stashes that copy in a
-  // visually-hidden .sr-only mirror for assistive tech, then rebuilds the
-  // visible copy as per-character spans, scrambles them through a symbol
-  // pool, and locks each one into place in a staggered left-to-right sweep
-  // with a brief accent flash. Runs once on load — not looped — so the
-  // primary headline settles and stops competing for attention, and it's
-  // skipped entirely under prefers-reduced-motion. A hover re-trigger
-  // (cooldown-gated, matching the source component) is kept as a small
-  // easter egg, since a "decrypt" motif fits a product about turning opaque
-  // payout data into plain English.
-  // ════════════════════════════════════════════════════════════
-  (function(){
-    const heading = document.querySelector('.hero .t-hero');
-    if(!heading) return;
-
-    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduceMotion) return; // leave the plain, static markup untouched
-
-    const originalHTML = heading.innerHTML;
-    const thinEl = heading.querySelector('.thin');
-    const thinText = thinEl ? thinEl.textContent : '';
-    const mainClone = heading.cloneNode(true);
-    const mainThinClone = mainClone.querySelector('.thin');
-    if(mainThinClone) mainThinClone.remove();
-    const mainText = mainClone.textContent;
-
-    const POOL          = '#%&@$?!*+=/{}[]<>~^';
-    const SPEED         = 45;
-    const CYCLE_SPREAD  = 35;
-    const STAGGER       = 55;
-    const START_DELAY   = 350;
-    const JITTER        = 120;
-    const HOVER_COOLDOWN = 1500;
-    const SEED = 7;
-
-    // mulberry32 — deterministic, no Math.random.
-    function makeRng(seed){
-      let a = seed >>> 0;
-      return function(){
-        a = (a + 0x6d2b79f5) | 0;
-        let t = Math.imul(a ^ (a >>> 15), 1 | a);
-        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-    const rng = makeRng(SEED);
-
-    function buildLine(text){
-      const frag = document.createDocumentFragment();
-      const chars = [];
-      const words = text.split(' ');
-      words.forEach((word, wi) => {
-        const wordSpan = document.createElement('span');
-        wordSpan.style.display = 'inline-block';
-        wordSpan.style.whiteSpace = 'pre';
-        Array.from(word).forEach((ch) => {
-          const charSpan = document.createElement('span');
-          charSpan.className = 'decrypt-char';
-          charSpan.dataset.final = ch;
-          charSpan.dataset.state = 'plain';
-          charSpan.textContent = ch;
-          wordSpan.appendChild(charSpan);
-          chars.push(charSpan);
-        });
-        frag.appendChild(wordSpan);
-        if(wi < words.length - 1) frag.appendChild(document.createTextNode(' '));
-      });
-      return { frag, chars };
-    }
-
-    // Real, readable copy for assistive tech — visually hidden, never scrambled.
-    const srOnly = document.createElement('span');
-    srOnly.className = 'sr-only';
-    srOnly.innerHTML = originalHTML;
-
-    // Visible, animated copy — hidden from assistive tech.
-    const visual = document.createElement('span');
-    visual.setAttribute('aria-hidden', 'true');
-
-    const mainLine = buildLine(mainText);
-    visual.appendChild(mainLine.frag);
-
-    let thinChars = [];
-    if(thinEl){
-      const thinWrap = document.createElement('span');
-      thinWrap.className = 'thin';
-      const thinLine = buildLine(thinText);
-      thinWrap.appendChild(thinLine.frag);
-      visual.appendChild(thinWrap);
-      thinChars = thinLine.chars;
-    }
-
-    heading.innerHTML = '';
-    heading.appendChild(srOnly);
-    heading.appendChild(visual);
-
-    const cells = mainLine.chars.concat(thinChars);
-    if(cells.length === 0) return;
-
-    let lockAt = cells.map((_, idx) => START_DELAY + idx * STAGGER + (rng() * 2 - 1) * JITTER);
-    let nextAt = new Array(cells.length).fill(0);
-    let locked = new Array(cells.length).fill(false);
-    let remaining = cells.length;
-    let raf = null;
-    let t0 = 0;
-    let lastStart = -Infinity;
-
-    function scrambleAll(){
-      cells.forEach((el) => {
-        el.dataset.state = 'scramble';
-        el.textContent = POOL.charAt((rng() * POOL.length) | 0);
-      });
-    }
-
-    function frame(now0){
-      const now = now0 - t0;
-      for(let idx = 0; idx < cells.length; idx++){
-        if(locked[idx]) continue;
-        const el = cells[idx];
-        if(now >= lockAt[idx]){
-          el.textContent = el.dataset.final;
-          el.dataset.state = 'lock';
-          locked[idx] = true;
-          remaining--;
-        } else if(now >= nextAt[idx]){
-          el.textContent = POOL.charAt((rng() * POOL.length) | 0);
-          nextAt[idx] = now + SPEED + rng() * CYCLE_SPREAD;
-        }
-      }
-      if(remaining <= 0){ raf = null; return; }
-      raf = requestAnimationFrame(frame);
-    }
-
-    function play(){
-      lockAt = cells.map((_, idx) => START_DELAY + idx * STAGGER + (rng() * 2 - 1) * JITTER);
-      nextAt = new Array(cells.length).fill(0);
-      locked = new Array(cells.length).fill(false);
-      remaining = cells.length;
-      scrambleAll();
-      t0 = performance.now();
-      lastStart = t0;
-      raf = requestAnimationFrame(frame);
-    }
-    play();
-
-    // Subtle re-trigger on hover, cooldown-gated so it can't be spammed.
-    heading.addEventListener('mouseenter', () => {
-      if(raf != null) return;
-      if(performance.now() - lastStart < HOVER_COOLDOWN) return;
-      play();
-    });
   })();
 </script>
 </body>
